@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@vercel/analytics/next";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -104,6 +105,7 @@ export default function RootLayout({
         />
         {children}
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
