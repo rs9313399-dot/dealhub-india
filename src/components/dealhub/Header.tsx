@@ -115,7 +115,19 @@ export function StickyMiniNav() {
       ? "Front Page"
       : route.name === "about"
       ? "About"
-      : categories.find((c) => c.slug === route.slug)?.name ?? "";
+      : route.name === "category"
+      ? (categories.find((c) => c.slug === route.slug)?.name ?? "")
+      : route.name === "best-of"
+      ? "Best Of"
+      : route.name === "deals"
+      ? "Deals"
+      : route.name === "watchlist"
+      ? "Watchlist"
+      : route.name === "search"
+      ? `Search: ${route.query}`
+      : route.name === "product"
+      ? "Product Review"
+      : "";
 
   return (
     <div className={`sticky-mini ${visible ? "visible" : ""}`}>

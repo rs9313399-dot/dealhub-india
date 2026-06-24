@@ -112,12 +112,12 @@ export function WatchlistPage() {
             </div>
           ) : (
             <div className="watchlist-grid">
-              {watchProducts.map(({ product, targetPrice, email }) => {
+              {watchProducts.map(({ product, targetPrice, email, productKey }) => {
                 const cat = categories.find((c) => c.slug === product.categorySlug)!;
                 const savings = product.price - targetPrice;
                 return (
                   <div
-                    key={product.productKey || `${product.categorySlug}:${product.rank}`}
+                    key={productKey || `${product.categorySlug}:${product.rank}`}
                     className="watch-card"
                     style={{ ["--accent" as string]: product.categoryAccent, borderTopColor: product.categoryAccent }}
                   >

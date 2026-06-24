@@ -183,7 +183,7 @@ function ProductImageImpl({
           className="category-hero-img"
           onLoad={() => setImgOk(true)}
           onError={() => setImgOk(false)}
-          style={{ display: imgOk === false ? "none" : "block" }}
+          style={{ display: imgOk === null ? "none" : "block" }}
         />
       )}
       {imgOk === false && (
