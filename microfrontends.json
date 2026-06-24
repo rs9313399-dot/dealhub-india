@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "dealhub-india": {
+      "development": {
+        "fallback": "dealhub-india.vercel.app"
+      }
+    }
+  }
+}
