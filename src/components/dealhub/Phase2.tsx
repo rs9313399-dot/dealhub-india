@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Category, Product } from "@/data/products";
+import { absoluteUrl, categoryImagePath } from "@/lib/site";
 import { useRouter } from "./Router";
 import { formatINR } from "./Blocks";
 
@@ -611,7 +612,7 @@ export function CategoryJsonLd({ category }: { category: Category }) {
         name: p.name,
         brand: { "@type": "Brand", name: p.brand },
         description: p.verdict,
-        image: `https://dealhub.in/images/categories/${category.slug === "gaming-peripherals" ? "gaming" : category.slug === "desk-setup" ? "desk" : category.slug}.png`,
+        image: absoluteUrl(categoryImagePath(category.slug)),
         offers: {
           "@type": "Offer",
           price: p.price,

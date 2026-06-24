@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
-import { categories, getCategory } from "@/data/products";
+import { getCategory, isDirectCategorySlug } from "@/data/products";
 
 export type Route =
   | { name: "home" }
@@ -69,11 +69,37 @@ function toHash(route: Route): string {
   return `#/${route.slug}`;
 }
 
-export function RouterProvider({ children }: { children: React.ReactNode }) {
-  // Start with home to match SSR output; the mount effect syncs the real hash.
-  const [route, setRoute] = useState<Route>({ name: "home" });
+function isHomePath(): boolean {
+  if (typeof window === "undefined") return true;
+  const path = window.location.pathname;
+  return path === "/" || path === "";
+}
+
+function hashRouterUrl(route: Route): string {
+  return `/${toHash(route)}`;
+}
+
+export function RouterProvider({
+  children,
+  initialRoute,
+  disableHashSync = false,
+}: {
+  children: React.ReactNode;
+  initialRoute?: Route;
+  disableHashSync?: boolean;
+}) {
+  // Start with provided initialRoute or home to match SSR output; the mount effect syncs the real hash.
+  const [route, setRoute] = useState<Route>(initialRoute || { name: "home" });
 
   useEffect(() => {
+    // Direct category pages: strip any stray hash-router fragments and never sync hash.
+    if (disableHashSync || !isHomePath()) {
+      if (typeof window !== "undefined" && window.location.hash.startsWith("#/")) {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+      return;
+    }
+
     const applyHash = () => {
       const parsed = parseHash();
       if (parsed === null) {
@@ -105,29 +131,65 @@ export function RouterProvider({ children }: { children: React.ReactNode }) {
       }
     };
     window.addEventListener("hashchange", onHash);
-    // Initialize hash if empty
+
+    // Legacy hash category URLs → direct routes for SEO (e.g. /#/smartwatches → /smartwatches).
+    const legacyParsed = parseHash();
+    if (
+      legacyParsed?.name === "category" &&
+      isDirectCategorySlug(legacyParsed.slug)
+    ) {
+      window.location.replace(`/${legacyParsed.slug}`);
+      return () => window.removeEventListener("hashchange", onHash);
+    }
+
+    // Initialize hash on the homepage only (relative "#/home" would corrupt direct routes).
     if (!window.location.hash) {
-      window.history.replaceState(null, "", "#/home");
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#/home`);
     }
     // On mount, sync state with the current hash (handles direct loads with #/route)
     applyHash();
     return () => window.removeEventListener("hashchange", onHash);
-  }, []);
+  }, [disableHashSync]);
 
-  const navigate = useCallback((r: Route) => {
-    const target = toHash(r);
-    if (window.location.hash === target) {
-      // Same route — just scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-    window.location.hash = target;
-  }, []);
+  const navigate = useCallback(
+    (r: Route) => {
+      // Direct category URLs live at /{slug}, not in the hash router.
+      if (r.name === "category" && isDirectCategorySlug(r.slug)) {
+        const targetPath = `/${r.slug}`;
+        if (window.location.pathname === targetPath) {
+          setRoute(r);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+        window.location.assign(targetPath);
+        return;
+      }
 
-  return <Ctx.Provider value={{ route, navigate }}>{children}<RouteMeta route={route} /></Ctx.Provider>;
+      // Hash-only routes: load the homepage with the right hash fragment.
+      if (disableHashSync || !isHomePath()) {
+        window.location.assign(hashRouterUrl(r));
+        return;
+      }
+
+      const target = toHash(r);
+      if (window.location.hash === target) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      window.location.hash = target;
+    },
+    [disableHashSync]
+  );
+
+  return (
+    <Ctx.Provider value={{ route, navigate }}>
+      {children}
+      {!disableHashSync && <RouteMeta route={route} />}
+    </Ctx.Provider>
+  );
 }
 
-/** Updates document.title + meta description per route (client-side, for hash router) */
+/** Updates document.title + meta description per route (client-side, hash router only) */
 function RouteMeta({ route }: { route: Route }) {
   useEffect(() => {
     const titles: Record<string, string> = {

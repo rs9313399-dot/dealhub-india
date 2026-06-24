@@ -1,4 +1,5 @@
 import { categories } from "@/data/products";
+import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
 
@@ -45,7 +46,7 @@ export function GET() {
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>DealHub India — Recently Updated</title>
-    <link>https://dealhub.in</link>
+    <link>${SITE_URL}</link>
     <description>Latest guide updates, retests, and ranking changes from the DealHub India editorial team. Budget gadgets tested over multi-week cycles.</description>
     <language>en-IN</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Fraunces, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SITE_URL } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -35,12 +37,12 @@ export const metadata: Metadata = {
     "deal reviews india",
   ],
   authors: [{ name: "DealHub India Editorial" }],
-  metadataBase: new URL("https://dealhub.in"),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: "https://z-cdn.chatglm.cn/z-ai/static/logo.svg",
   },
   alternates: {
-    canonical: "https://dealhub.in",
+    canonical: SITE_URL,
   },
   openGraph: {
     title: "DealHub India — Tested Deals, Honest Reviews",
@@ -48,7 +50,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "DealHub India",
     locale: "en_IN",
-    url: "https://dealhub.in",
+    url: SITE_URL,
     images: [
       { url: "/images/categories/smartwatches.png", width: 1344, height: 768, alt: "DealHub India — editorial product photography" },
     ],
@@ -65,7 +67,7 @@ const orgJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "DealHub India",
-  url: "https://dealhub.in",
+  url: SITE_URL,
   description: "Editorial affiliate deals website covering budget gadgets for the Indian market. Products are bought anonymously, tested over multi-week cycles, and reviewed honestly.",
   foundingDate: "2023",
   areaServed: "IN",
@@ -87,17 +89,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){function s(){document.querySelectorAll('[fdprocessedid]').forEach(function(e){e.removeAttribute('fdprocessedid')});document.querySelectorAll('[style]').forEach(function(e){var s=e.getAttribute('style');if(s&&s.indexOf('darkreader')!==-1){e.setAttribute('style',s.replace(/--darkreader[^;]*;?/g,'').replace(/;\\s*;/g,';').replace(/^;|;$/g,''))}});['data-darkreader-inline-bg','data-darkreader-inline-color','data-darkreader-inline-bgimage','data-darkreader-inline-bgcolor','data-darkreader-inline-border-top','data-darkreader-inline-border-right','data-darkreader-inline-border-bottom','data-darkreader-inline-border-left'].forEach(function(a){document.querySelectorAll('['+a+']').forEach(function(e){e.removeAttribute(a)})})}s();setTimeout(s,0);var o=new MutationObserver(function(m){m.forEach(function(r){if(r.type==='attributes'&&(r.attributeName==='fdprocessedid'||(r.attributeName||'').indexOf('darkreader')!==-1)){s()}})});if(document.documentElement)o.observe(document.documentElement,{attributes:true,subtree:true})})();`,
-          }}
-        />
-      </head>
       <body
         className={`${fraunces.variable} ${sourceSans.variable} ${plexMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <Script id="extension-cleanup" strategy="beforeInteractive">
+          {`(function(){function s(){document.querySelectorAll('[fdprocessedid]').forEach(function(e){e.removeAttribute('fdprocessedid')});document.querySelectorAll('[style]').forEach(function(e){var s=e.getAttribute('style');if(s&&s.indexOf('darkreader')!==-1){e.setAttribute('style',s.replace(/--darkreader[^;]*;?/g,'').replace(/;\\s*;/g,';').replace(/^;|;$/g,''))}});['data-darkreader-inline-bg','data-darkreader-inline-color','data-darkreader-inline-bgimage','data-darkreader-inline-bgcolor','data-darkreader-inline-border-top','data-darkreader-inline-border-right','data-darkreader-inline-border-bottom','data-darkreader-inline-border-left'].forEach(function(a){document.querySelectorAll('['+a+']').forEach(function(e){e.removeAttribute(a)})})}s();setTimeout(s,0);var o=new MutationObserver(function(m){m.forEach(function(r){if(r.type==='attributes'&&(r.attributeName==='fdprocessedid'||(r.attributeName||'').indexOf('darkreader')!==-1)){s()}})});if(document.documentElement)o.observe(document.documentElement,{attributes:true,subtree:true})})();`}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

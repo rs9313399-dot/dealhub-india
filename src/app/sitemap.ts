@@ -1,18 +1,16 @@
 import type { MetadataRoute } from "next";
 import { categories } from "@/data/products";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://dealhub.in";
   const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${base}/#/home`, lastModified: now, changeFrequency: "daily", priority: 1.0 },
-    { url: `${base}/#/best-of`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/#/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/`, lastModified: now, changeFrequency: "daily", priority: 1.0 },
   ];
 
   const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
-    url: `${base}/#/${c.slug}`,
+    url: `${SITE_URL}/${c.slug}`,
     lastModified: new Date(c.lastUpdated),
     changeFrequency: "weekly" as const,
     priority: 0.8,
