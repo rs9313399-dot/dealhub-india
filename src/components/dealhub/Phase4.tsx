@@ -24,7 +24,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (saved === "dark" || saved === "light") {
         // Syncing from external storage (localStorage) is a valid effect use case.
         // This runs AFTER hydration, preventing server/client mismatch.
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setThemeState(saved);
         document.documentElement.setAttribute("data-theme", saved);
       }

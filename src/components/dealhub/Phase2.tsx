@@ -257,7 +257,6 @@ export function CompareProvider({ children, maxItems = 3, categorySlug }: { chil
           .slice(0, maxItems);
         if (ranks.length > 0) {
           // Syncing from URL params after hydration — valid effect use case.
-          // eslint-disable-next-line react-hooks/set-state-in-effect
           setSelected(ranks);
         }
       }

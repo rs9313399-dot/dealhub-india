@@ -406,7 +406,6 @@ export function ReaderVotes({ productKey, category }: { productKey: string; cate
 
   useEffect(() => {
     // Syncing from external storage (localStorage) after hydration — valid effect use case.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVotes(readVotes());
   }, []);
 
